@@ -8,5 +8,5 @@ import io.github.brunoyillli.minhasfinancas.entity.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
-	boolean findByEmail(String email);
+	boolean existsByEmail(String email);
 }

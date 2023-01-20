@@ -31,7 +31,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 	@Override
 	public void validarEmail(String email) {
-		boolean existe = repository.findByEmail(email);
+		boolean existe = repository.existsByEmail(email);
 		if(existe) {
 			throw new RegraNegocioException("Já existe um usuario cadastrado com este e-mail");
 		}
