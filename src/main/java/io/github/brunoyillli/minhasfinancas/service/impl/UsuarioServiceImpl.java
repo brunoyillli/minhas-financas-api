@@ -12,10 +12,10 @@ import io.github.brunoyillli.minhasfinancas.repository.UsuarioRepository;
 import io.github.brunoyillli.minhasfinancas.service.UsuarioService;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService{
+public class UsuarioServiceImpl implements UsuarioService {
 
 	private UsuarioRepository repository;
-	
+
 	public UsuarioServiceImpl(UsuarioRepository repository) {
 		super();
 		this.repository = repository;
@@ -24,10 +24,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 	@Override
 	public Usuario autenticar(String email, String senha) {
 		Optional<Usuario> usuario = repository.findByEmail(email);
-		if(!usuario.isPresent()) {
+		if (!usuario.isPresent()) {
 			throw new ErroAutenticacaoException("Usuario não encontrado para o e-mail informado.");
 		}
-		if(!usuario.get().getSenha().equals(senha)) {
+		if (!usuario.get().getSenha().equals(senha)) {
 			throw new ErroAutenticacaoException("Senha invalida.");
 		}
 		return usuario.get();
@@ -43,10 +43,16 @@ public class UsuarioServiceImpl implements UsuarioService{
 	@Override
 	public void validarEmail(String email) {
 		boolean existe = repository.existsByEmail(email);
-		if(existe) {
+		if (existe) {
 			throw new RegraNegocioException("Já existe um usuario cadastrado com este e-mail");
 		}
-		
+
+	}
+
+	@Override
+	public Usuario findById(Long id) {
+		return repository.findById(id)
+				.orElseThrow(() -> new RegraNegocioException("Usuario nao encontrado para o ID informado"));
 	}
 
 }

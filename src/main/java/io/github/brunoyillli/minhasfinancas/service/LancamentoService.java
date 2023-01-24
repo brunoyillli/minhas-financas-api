@@ -1,6 +1,7 @@
 package io.github.brunoyillli.minhasfinancas.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.github.brunoyillli.minhasfinancas.entity.Lancamento;
 import io.github.brunoyillli.minhasfinancas.entity.enums.StatusLancamento;
