@@ -44,8 +44,8 @@ public class LancamentoServiceImpl implements LancamentoService {
 
 	@Override
 	@Transactional
-	public void deletar(Lancamento lancamento) {
-		Lancamento lancamentoEncontrado = findById(lancamento.getId());
+	public void deletar(Long id) {
+		Lancamento lancamentoEncontrado = findById(id);
 		repository.delete(lancamentoEncontrado);
 
 	}
@@ -67,7 +67,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Override
 	public Lancamento findById(Long id) {
 		Optional<Lancamento> lancamentoEncontrado = repository.findById(id);
-		if (lancamentoEncontrado == null) {
+		if (lancamentoEncontrado.isEmpty()) {
 			throw new RegraNegocioException("Lancamento não encontrado");
 		}
 		return lancamentoEncontrado.get();
