@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.brunoyillli.minhasfinancas.entity.Lancamento;
 import io.github.brunoyillli.minhasfinancas.entity.enums.StatusLancamento;
+import io.github.brunoyillli.minhasfinancas.entity.enums.TipoLancamento;
 import io.github.brunoyillli.minhasfinancas.exception.RegraNegocioException;
 import io.github.brunoyillli.minhasfinancas.repository.LancamentoRepository;
 import io.github.brunoyillli.minhasfinancas.service.LancamentoService;
@@ -94,6 +95,21 @@ public class LancamentoServiceImpl implements LancamentoService {
 			throw new RegraNegocioException("Informe um tipo de Lancamento");
 		}
 
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public BigDecimal obterSaldoPorUsuario(Long id) {
+		BigDecimal receitas = repository.obterSaldoPorTipoLancamentoUsuario(id, TipoLancamento.RECEITA);
+		BigDecimal despesas = repository.obterSaldoPorTipoLancamentoUsuario(id, TipoLancamento.DESPESA);
+		
+		if(receitas == null) {
+			receitas = BigDecimal.ZERO;
+		}
+		if(despesas == null) {
+			despesas = BigDecimal.ZERO;
+		}
+		return receitas.subtract(despesas);
 	}
 
 }

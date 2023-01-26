@@ -1,7 +1,7 @@
 package io.github.brunoyillli.minhasfinancas.service;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import io.github.brunoyillli.minhasfinancas.entity.Lancamento;
 import io.github.brunoyillli.minhasfinancas.entity.enums.StatusLancamento;
@@ -21,4 +21,6 @@ public interface LancamentoService {
 	Lancamento findById(Long id);
 	
 	void validar(Lancamento lancamento);
+	
+	BigDecimal obterSaldoPorUsuario(Long id);
 }

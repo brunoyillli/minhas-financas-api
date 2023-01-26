@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.brunoyillli.minhasfinancas.dto.AtualizaStatusDTO;
 import io.github.brunoyillli.minhasfinancas.dto.LancamentoDTO;
 import io.github.brunoyillli.minhasfinancas.entity.Lancamento;
 import io.github.brunoyillli.minhasfinancas.entity.Usuario;
@@ -93,6 +94,22 @@ public class LancamentoResource {
 		}
 	}
 
+	@PutMapping("{id}/atualiza-status")
+	public ResponseEntity atualizarStatus( @PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto ) {
+		try {
+			Lancamento lancamentoEncontrado = service.findById(id);
+			StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
+			if(statusSelecionado == null) {
+				return ResponseEntity.badRequest().body("Não foi possivel atualizar o status do lancamento, envie um status valido");
+			}
+			lancamentoEncontrado.setStatus(statusSelecionado);
+			service.atualizar(lancamentoEncontrado);
+			return ResponseEntity.ok(lancamentoEncontrado);
+		} catch (RegraNegocioException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
 	private Lancamento converter(LancamentoDTO dto) {
 		Lancamento lancamento = new Lancamento();
 		lancamento.setDescricao(dto.getDescricao());

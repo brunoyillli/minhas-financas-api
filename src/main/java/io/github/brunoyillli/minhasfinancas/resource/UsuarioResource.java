@@ -1,7 +1,11 @@
 package io.github.brunoyillli.minhasfinancas.resource;
 
+import java.math.BigDecimal;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +15,7 @@ import io.github.brunoyillli.minhasfinancas.dto.UsuarioDTO;
 import io.github.brunoyillli.minhasfinancas.entity.Usuario;
 import io.github.brunoyillli.minhasfinancas.exception.ErroAutenticacaoException;
 import io.github.brunoyillli.minhasfinancas.exception.RegraNegocioException;
+import io.github.brunoyillli.minhasfinancas.service.LancamentoService;
 import io.github.brunoyillli.minhasfinancas.service.UsuarioService;
 
 @RestController
@@ -18,9 +23,11 @@ import io.github.brunoyillli.minhasfinancas.service.UsuarioService;
 public class UsuarioResource {
 
 	private UsuarioService service;
-
-	public UsuarioResource(UsuarioService service) {
+	private LancamentoService lancamentoService;
+	
+	public UsuarioResource(UsuarioService service, LancamentoService lancamentoService) {
 		this.service = service;
+		this.lancamentoService = lancamentoService;
 	}
 
 	@PostMapping
@@ -42,6 +49,17 @@ public class UsuarioResource {
 			return ResponseEntity.ok(usuarioAutenticado);
 		}catch (ErroAutenticacaoException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@GetMapping("{id}/saldo")
+	public ResponseEntity obterSaldo(@PathVariable("id") Long id) {
+		try {
+			service.findById(id);
+			BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);
+			return ResponseEntity.ok(saldo);
+		}catch (RegraNegocioException e) {
+			return ResponseEntity.notFound().build();
 		}
 	}
 
