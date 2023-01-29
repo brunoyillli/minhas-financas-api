@@ -129,5 +129,21 @@ public class UsuarioResourceTest {
 		mvc.perform(request).andExpect(MockMvcResultMatchers.status().isOk())
 			.andExpect(jsonPath("$", equalTo(saldo.intValue())));
 	}
+	
+	@Test
+	@DisplayName("deve retornar not found ao não encontrar usuario")
+	public void saldoUsuarioNotFound() throws Exception {
+		Usuario usuario = getUsuario();
+		BigDecimal saldo = BigDecimal.valueOf(1000);
+		Mockito.when(service.findById(Mockito.anyLong())).thenThrow(RegraNegocioException.class);
+		Mockito.when(lancamentoService.obterSaldoPorUsuario(Mockito.anyLong()))
+			.thenReturn(BigDecimal.valueOf(1000));
+		String json = new ObjectMapper().writeValueAsString(saldo);
+
+		MockHttpServletRequestBuilder request = 
+				MockMvcRequestBuilders.get(API.concat("/"+usuario.getId()+"/saldo"))
+				.accept(MediaType.APPLICATION_JSON).content(json);
+		mvc.perform(request).andExpect(MockMvcResultMatchers.status().isNotFound());
+	}
 
 }
