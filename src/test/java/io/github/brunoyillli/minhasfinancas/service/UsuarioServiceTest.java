@@ -92,4 +92,24 @@ public class UsuarioServiceTest {
 		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(usuario.getEmail());
 		Assertions.assertThrows(RegraNegocioException.class, () -> service.salvarUsuario(usuario));
 	}
+	
+	@Test
+	@DisplayName("Deve buscar um usuario por id com sucesso")
+	public void findByIdUserSucess() {
+		Usuario usuario = getUsuarioValido();
+		Mockito.when(repository.findById(Mockito.anyLong())).thenReturn(Optional.of(usuario));
+
+		Usuario result = service.findById(usuario.getId());
+
+		org.assertj.core.api.Assertions.assertThat(result).isNotNull();
+	}
+	
+	@Test
+	@DisplayName("Deve lancar uma excecao ao buscar um usuario por id")
+	public void findByIdUserThrowException() {
+		Usuario usuario = getUsuarioValido();
+		Mockito.when(repository.findById(Mockito.anyLong())).thenThrow(RegraNegocioException.class);
+
+		Assertions.assertThrows(RegraNegocioException.class, () -> service.findById(usuario.getId()));
+	}
 }
