@@ -182,10 +182,10 @@ public class LancamentoServiceTest {
 	@Test
 	@DisplayName("Deve buscar o saldo do usuario com sucesso")
 	public void findSaldoUsuarioSucess() {
-		Mockito.when(lancamentoRepository.obterSaldoPorTipoLancamentoUsuario(
-				1L, TipoLancamento.RECEITA)).thenReturn(BigDecimal.valueOf(5000));
-		Mockito.when(lancamentoRepository.obterSaldoPorTipoLancamentoUsuario(
-				1L, TipoLancamento.DESPESA)).thenReturn(BigDecimal.valueOf(2000));
+		Mockito.when(lancamentoRepository.obterSaldoPorTipoLancamentoUsuarioEStatus(
+				1L, TipoLancamento.RECEITA,StatusLancamento.EFETIVADO)).thenReturn(BigDecimal.valueOf(5000));
+		Mockito.when(lancamentoRepository.obterSaldoPorTipoLancamentoUsuarioEStatus(
+				1L, TipoLancamento.DESPESA,StatusLancamento.EFETIVADO)).thenReturn(BigDecimal.valueOf(2000));
 		BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(1L);
 		Assertions.assertThat(saldo).isEqualTo(BigDecimal.valueOf(3000));
 	}
@@ -193,10 +193,10 @@ public class LancamentoServiceTest {
 	@Test
 	@DisplayName("Deve buscar o saldo zerado do usuario com sucesso")
 	public void findSaldoZeradoUsuarioSucess() {
-		Mockito.when(lancamentoRepository.obterSaldoPorTipoLancamentoUsuario(
-				1L, TipoLancamento.RECEITA)).thenReturn(null);
-		Mockito.when(lancamentoRepository.obterSaldoPorTipoLancamentoUsuario(
-				1L, TipoLancamento.DESPESA)).thenReturn(null);
+		Mockito.when(lancamentoRepository.obterSaldoPorTipoLancamentoUsuarioEStatus(
+				1L, TipoLancamento.RECEITA, StatusLancamento.EFETIVADO)).thenReturn(null);
+		Mockito.when(lancamentoRepository.obterSaldoPorTipoLancamentoUsuarioEStatus(
+				1L, TipoLancamento.DESPESA, StatusLancamento.EFETIVADO)).thenReturn(null);
 		BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(1L);
 		Assertions.assertThat(saldo).isEqualTo(BigDecimal.ZERO);
 	}
