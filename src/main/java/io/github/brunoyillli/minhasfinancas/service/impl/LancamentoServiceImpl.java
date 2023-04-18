@@ -68,8 +68,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Override
 	public Lancamento findById(Long id) {
 		Optional<Lancamento> lancamentoEncontrado = repository.findById(id);
-		System.out.println(lancamentoEncontrado.get().getDescricao());
-		if (lancamentoEncontrado.isEmpty()) {
+		if (!lancamentoEncontrado.isPresent()) {
 			throw new RegraNegocioException("Lancamento não encontrado");
 		}
 		return lancamentoEncontrado.get();
