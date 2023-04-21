@@ -10,7 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import io.github.brunoyillli.minhasfinancas.service.JwtService;
 import io.github.brunoyillli.minhasfinancas.service.impl.SecurityUserDetailService;
 
 @SuppressWarnings("deprecation")
@@ -20,12 +22,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private SecurityUserDetailService userDetailService;
 	
+	@Autowired
+	private JwtService jwtService;
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailService)
 		.passwordEncoder(passwordEncoder());
 	}
 
+	@Bean
+	public JwtTokenFilter jwtTokenFilter() {
+		return new JwtTokenFilter(jwtService, userDetailService);
+	}
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -37,7 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-			.httpBasic();
+			.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 	
 	@Bean
