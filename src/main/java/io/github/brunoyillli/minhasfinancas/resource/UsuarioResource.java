@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.brunoyillli.minhasfinancas.dto.TokenDTO;
 import io.github.brunoyillli.minhasfinancas.dto.UsuarioDTO;
 import io.github.brunoyillli.minhasfinancas.entity.Usuario;
 import io.github.brunoyillli.minhasfinancas.exception.ErroAutenticacaoException;
 import io.github.brunoyillli.minhasfinancas.exception.RegraNegocioException;
+import io.github.brunoyillli.minhasfinancas.service.JwtService;
 import io.github.brunoyillli.minhasfinancas.service.LancamentoService;
 import io.github.brunoyillli.minhasfinancas.service.UsuarioService;
 
@@ -24,10 +26,12 @@ public class UsuarioResource {
 
 	private UsuarioService service;
 	private LancamentoService lancamentoService;
+	private JwtService jwtService;
 	
-	public UsuarioResource(UsuarioService service, LancamentoService lancamentoService) {
+	public UsuarioResource(UsuarioService service, LancamentoService lancamentoService, JwtService jwtService) {
 		this.service = service;
 		this.lancamentoService = lancamentoService;
+		this.jwtService = jwtService;
 	}
 
 	@PostMapping
@@ -46,7 +50,9 @@ public class UsuarioResource {
 	public ResponseEntity<?> autenticar(@RequestBody UsuarioDTO dto) {
 		try {
 			Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
-			return ResponseEntity.ok(usuarioAutenticado);
+			String token = jwtService.gerarToken(usuarioAutenticado);
+			TokenDTO tokenDTO = new TokenDTO(usuarioAutenticado.getNome(), token);
+			return ResponseEntity.ok(tokenDTO);
 		}catch (ErroAutenticacaoException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
