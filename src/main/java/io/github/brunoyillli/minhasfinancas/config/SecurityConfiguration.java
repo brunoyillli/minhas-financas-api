@@ -1,5 +1,6 @@
 package io.github.brunoyillli.minhasfinancas.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,15 +11,19 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import io.github.brunoyillli.minhasfinancas.service.impl.SecurityUserDetailService;
+
 @SuppressWarnings("deprecation")
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	private SecurityUserDetailService userDetailService;
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-			.withUser("admin")
-			.password(passwordEncoder().encode("admin")).roles("USER");
+		auth.userDetailsService(userDetailService)
+		.passwordEncoder(passwordEncoder());
 	}
 
 	@Override
