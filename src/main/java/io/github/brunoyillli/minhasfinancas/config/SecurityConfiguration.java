@@ -23,7 +23,6 @@ import org.springframework.web.filter.CorsFilter;
 import io.github.brunoyillli.minhasfinancas.service.JwtService;
 import io.github.brunoyillli.minhasfinancas.service.impl.SecurityUserDetailService;
 
-@SuppressWarnings("deprecation")
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
